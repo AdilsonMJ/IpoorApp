@@ -8,24 +8,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class CreatingAndCloserConnection {
+    Statement statement = null;
 
-    @Getter
-    private String CPF;
-    private static Connection connection = null;
-    private static Statement statement = null;
-    @Getter
-    private ResultSet resultSet = null;
-
-    public CreatingAndCloserConnection(String CPF) {
-        this.CPF = CPF;
-        startConnection();
-    }
-
-    private void startConnection() {
+    private void startConnection(String CPF) {
         try {
-            connection = DBConnetion.getConnection();
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery("select * from cliente where CPF = " + this.getCPF());
+           Connection connection = DBConnetion.getConnection();
+           statement = connection.createStatement();
+           ResultSet resultSet = statement.executeQuery("select * from cliente where CPF = " + CPF);
 
         } catch (SQLException e){
             throw  new DBException(e.getMessage());
@@ -35,6 +24,7 @@ public class CreatingAndCloserConnection {
 
     public void resultSetShowRestaurant(){
         try {
+
             ResultSet rs = statement.executeQuery("Select * from restaurantes");
             while (rs.next()) {
                 System.out.println(rs.getString("NOME"));
@@ -42,9 +32,30 @@ public class CreatingAndCloserConnection {
         }catch (SQLException e){
                 throw new DBException(e.getMessage());
             }
-        }
+    }
 
-    public void closerConnection(){
+    public Boolean validation(String CPF, String PASS){
+
+        Boolean validated = false;
+
+        try{
+            Connection conn = DBConnetion.getConnection();
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery("select * from cliente where CPF = " + CPF + " and PASS = " + PASS);
+
+            while (resultSet.next()){
+                System.out.println(resultSet.getString("CPF") + " - Pass " + resultSet.getString("PASS"));
+                validated = true;
+            }
+
+        }catch (SQLException e){
+            throw new DBException(e.getMessage());
+        }
+        return validated;
+    };
+
+
+    public void closerConnection(Connection connection){
         if (connection != null){
             try{
                 connection.close();
@@ -54,7 +65,7 @@ public class CreatingAndCloserConnection {
         }
     }
 
-    public void closerStatement(){
+    public void closerStatement(Statement statement){
         if (statement != null){
             try{
                 statement.close();

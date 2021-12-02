@@ -4,6 +4,7 @@ import bancoDeDados.CreatingAndCloserConnection;
 import bancoDeDados.DBException;
 import com.sun.source.tree.IfTree;
 import lombok.Getter;
+import org.w3c.dom.ls.LSOutput;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -22,20 +23,19 @@ public class Client implements IntClient{
     ResultSet resultSet = null;
     List<PropertiesVendedor> propertiesVendedors = new ArrayList();
 
-    public Client(String CPF) {
+    public Client(String CPF, String PASS) {
         this.CPF = CPF;
-        creatingAndCloserConnection = new CreatingAndCloserConnection(CPF);
-        resultSet = creatingAndCloserConnection.getResultSet();
+        creatingAndCloserConnection = new CreatingAndCloserConnection();
 
-        try {
-            if (!resultSet.next()) {
-                criarUsuario();
-            } else {
-                salvarDadosList(resultSet);
-            }
-        }catch (SQLException e){
-            throw new DBException(e.getMessage());
+        Boolean validated = creatingAndCloserConnection.validation(CPF, PASS);
+        if (validated){
+            System.out.println("APROVADO");
+        } else{
+            System.out.println("ACESSO NEGADO!");
         }
+
+
+
     }
 
     @Override
