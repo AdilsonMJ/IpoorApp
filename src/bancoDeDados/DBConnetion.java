@@ -33,4 +33,43 @@ public class DBConnetion {
             }
         return connection;
     }
+
+
+    public Boolean validationCPF(String CPF, String PASS){
+
+        Boolean validated = false;
+
+        try{
+            Connection conn = DBConnetion.getConnection();
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery("select * from cliente where CPF = " + CPF + " and PASS = " + PASS);
+
+            while (resultSet.next()){
+                validated = true;
+            }
+
+        }catch (SQLException e){
+            throw new DBException(e.getMessage());
+        }
+        return validated;
+
+    };
+
+    public Boolean validationCNPJ(String CNPJ, String PASS){
+        Boolean validationCNPJ = false;
+
+        try {
+            Connection connection = DBConnetion.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM RESTAURANTES WHERE CNPJ = " + CNPJ + " AND PASS = " + PASS);
+
+            while (resultSet.next()){
+                validationCNPJ = true;
+            }
+        } catch (SQLException e){
+            throw new DBException(e.getMessage());
+        }
+
+        return validationCNPJ;
+    };
 }

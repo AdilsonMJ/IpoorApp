@@ -11,8 +11,8 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PropertiesVendedor {
-    protected String CPF, nome, telefone, endereco1, cep, bairro, cidade, estado;
+public class PropertiesClient {
+    protected String CPF, nome, telefone, endereco1, cep, bairro, cidade, estado, pass;
     protected Date date;
     protected int idade;
 }
